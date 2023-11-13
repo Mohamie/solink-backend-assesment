@@ -1,6 +1,8 @@
 import "reflect-metadata"
 import { DataSource } from "typeorm"
 import 'dotenv/config'
+import { User } from "./entities/User"
+import { Task } from "./entities/Task"
 
 
 export const AppDataSource = new DataSource({
@@ -12,7 +14,7 @@ export const AppDataSource = new DataSource({
     database: "user_task_management",
     synchronize: true,
     logging: false,
-    entities: [],
+    entities: [User, Task],
     migrations: [],
     subscribers: [],
 })

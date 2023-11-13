@@ -1,10 +1,8 @@
-import "reflect-metadata"
-import { DataSource } from "typeorm"
-import 'dotenv/config'
-import { User } from "./entities/User"
-import { Task } from "./entities/Task"
-
-
+import "reflect-metadata";
+import { DataSource } from "typeorm";
+import 'dotenv/config';
+import { User } from "./entities/User.js";
+import { Task } from "./entities/Task.js";
 export const AppDataSource = new DataSource({
     type: "postgres",
     host: process.env.HOST,
@@ -17,4 +15,4 @@ export const AppDataSource = new DataSource({
     entities: [User, Task],
     migrations: [],
     subscribers: [],
-})
+});

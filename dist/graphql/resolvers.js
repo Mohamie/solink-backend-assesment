@@ -2,8 +2,10 @@ import { TaskRepository } from "../db/repositories/TaskRepository.js";
 import { UserRepository } from "../db/repositories/UserRepository.js";
 export const resolvers = {
     Query: {
-        tasks: async (parent, { userId }) => await TaskRepository.getUserTasks(userId),
-        task: async (parent, { userId, taskId }) => await TaskRepository.getUserTask(userId, taskId),
+        users: async () => await UserRepository.getUsers(),
+        user: async (parent, { id }) => await UserRepository.getUsersById(id),
+        tasks: async () => await TaskRepository.getAllTasks(),
+        task: async (parent, { id }) => await TaskRepository.getTaskById(id),
     },
     Mutation: {
         createUser: async (parent, { user }) => await UserRepository.createUser(user),

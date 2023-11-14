@@ -19,15 +19,17 @@ export const typeDefs = `#graphql
   }
 
   type Query {
-    tasks(userId: ID!): [Task] 
-    task(userId: ID!, taskId: ID!): Task 
+    users: [User]
+    user(id: ID!): User
+    tasks: [Task] 
+    task(id: ID!): Task 
   }
 
   type Mutation {
-    createUser(user: CreateUserInput!): ResponseMessage  
-    createTask(userId: ID!, task: CreateTaskInput!): ResponseMessage 
-    updateTask(userId: ID!, taskId: ID!, task: UpdateTaskInput!): ResponseMessage 
-    completeTask(userId: ID!, taskId: ID!): ResponseMessage 
+    createUser(user: CreateUserInput!): User  
+    createTask(userId: ID!, task: CreateTaskInput!): Task 
+    updateTask(userId: ID!, taskId: ID!, task: UpdateTaskInput!): Task 
+    completeTask(userId: ID!, taskId: ID!): Task 
     deleteTask(userId: ID!, taskId: ID!): ResponseMessage 
   }
 

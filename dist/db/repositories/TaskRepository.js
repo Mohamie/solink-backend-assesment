@@ -3,33 +3,33 @@ import { Task } from "../entities/Task.js";
 import { userRepo } from "./UserRepository.js";
 export const taskRepo = AppDataSource.getRepository(Task);
 export class TaskRepository {
-    static async getUserTasks(userId) {
-        return await taskRepo.findBy({ user: { id: userId } });
+    static async getAllTasks() {
+        return await taskRepo.find({ relations: { user: true } });
     }
-    static async getUserTask(userId, taskId) {
-        return await taskRepo.findOneBy({ id: taskId, user: { id: userId } });
+    static async getTaskById(id) {
+        return await taskRepo.findOne({ relations: { user: true }, where: { id } });
     }
     static async createUserTask(userId, task) {
         const user = await this.getUserById(userId);
         if (!user)
-            return { message: `Error: Couldn't find user with id: ${userId}` };
+            return null;
         const newTask = { ...task, user };
-        await taskRepo.save(newTask);
-        return { message: "Task created!!" };
+        const savedTask = await taskRepo.save(newTask);
+        return savedTask;
     }
     static async updateUserTask(userId, taskId, task) {
         const taskToBeUpdated = await this.getUserTaskById(userId, taskId);
         if (!taskToBeUpdated)
-            return { message: `Error: Couldn't find task with id: ${taskId} associated with user id: ${userId}` };
+            return null;
         await taskRepo.update(taskId, task);
-        return { message: "Task Updated!!" };
+        return this.getTaskById(taskId);
     }
     static async completeUserTask(userId, taskId) {
         const taskToBeUpdated = await this.getUserTaskById(userId, taskId);
         if (!taskToBeUpdated)
             return { message: `Error: Couldn't find task with id: ${taskId} associated with user id: ${userId}` };
         await taskRepo.update(taskId, { ...taskToBeUpdated, completed: true });
-        return { message: "Task marked completed!!" };
+        return this.getTaskById(taskId);
     }
     static async deleteUserTask(userId, taskId) {
         const taskToBeDeleted = await this.getUserTaskById(userId, taskId);

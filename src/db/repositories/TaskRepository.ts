@@ -5,34 +5,34 @@ import { userRepo } from "./UserRepository.js";
 export const taskRepo = AppDataSource.getRepository(Task);
 
 export class TaskRepository{
-    static async getUserTasks(userId: number){
-        return await taskRepo.findBy({user: {id: userId}});
+    static async getAllTasks(){
+        return await taskRepo.find({relations: {user: true}});
     }
 
-    static async getUserTask(userId: number, taskId: number){
-        return await taskRepo.findOneBy({id: taskId, user: {id: userId}});
+    static async getTaskById(id: number){
+        return await taskRepo.findOne({relations: {user: true}, where: {id}});
     }
     
     static async createUserTask(userId: number, task: Task){
         const user = await this.getUserById(userId);
 
-        if(!user) return {message: `Error: Couldn't find user with id: ${userId}`}
+        if(!user) return null;
 
         const newTask = {...task, user}
 
-        await taskRepo.save(newTask);
+        const savedTask = await taskRepo.save(newTask);
 
-        return {message: "Task created!!"}
+        return savedTask;
     }
 
     static async updateUserTask(userId: number, taskId: number, task: Task){
         const taskToBeUpdated = await this.getUserTaskById(userId, taskId);
               
-        if(!taskToBeUpdated) return {message: `Error: Couldn't find task with id: ${taskId} associated with user id: ${userId}`}
+        if(!taskToBeUpdated) return null;
         
         await taskRepo.update(taskId, task);
 
-        return {message: "Task Updated!!"};
+        return this.getTaskById(taskId);
     }
    
     static async completeUserTask(userId: number, taskId: number){
@@ -42,7 +42,7 @@ export class TaskRepository{
         
         await taskRepo.update(taskId, {...taskToBeUpdated, completed: true});
 
-        return {message: "Task marked completed!!"}
+        return this.getTaskById(taskId)
     }
 
     static async deleteUserTask(userId: number, taskId: number){
